@@ -7,16 +7,16 @@
 
 
 
-Hora::Hora(const string &hora) {
+Hora::Hora(const std::string &hora) {
   if (hora.length() > 5) {
-    string nomFitxer(__FILE__);
-    string linia = to_string(__LINE__);
-    throw runtime_error(nomFitxer.append(" ").append(linia).append(" : String es major de 5"));
+    std::string nomFitxer(__FILE__);
+    std::string linia = std::to_string(__LINE__);
+    throw std::runtime_error(nomFitxer.append(" ").append(linia).append(" : String es major de 5"));
   }
   try {
     slotHora = stoi(hora.substr(0,2));
   }
-  catch (invalid_argument) {
+  catch (std::invalid_argument) {
     throw;
   }
   slotHora -= 7;

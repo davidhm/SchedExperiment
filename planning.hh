@@ -8,21 +8,21 @@
 
 class Planning {
 private:
-  vector <Assignatura> assignatures;
-  int trobaAssignatura(const string &nomAssignatura);
+  std::vector <Assignatura> assignatures;
+  int trobaAssignatura(const std::string &nomAssignatura);
 
 public:
   Planning();
-  bool existeixAssignatura(const string &nomAssignatura);
+  bool existeixAssignatura(const std::string &nomAssignatura);
 
-  bool existeixGrupEnAssignatura(const string &nomAssignatura, uint numeroGrup);
+  bool existeixGrupEnAssignatura(const std::string &nomAssignatura, uint numeroGrup);
 
-  void afegeixAssignatura(const string &nomAssignatura);
+  void afegeixAssignatura(const std::string &nomAssignatura);
 
-  void afegeixGrupAssignatura(const string &nomAssignatura, uint numeroGrup, bool esTeoric);
+  void afegeixGrupAssignatura(const std::string &nomAssignatura, uint numeroGrup, bool esTeoric);
 
-  void afegeixSlotGrupAssignatura(const string &nomAssignatura, uint numeroGrup, const string &hora,
-  uint dia, const string &aula);
+  void afegeixSlotGrupAssignatura(const std::string &nomAssignatura, uint numeroGrup, const std::string &hora,
+  uint dia, const std::string &aula);
 };
 
 #endif

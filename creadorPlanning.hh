@@ -12,10 +12,10 @@
 class CreadorPlanning {
 private:
   Planning planning;
-  istream *llegidor;
+  std::istream *llegidor;
 
 public:
-  CreadorPlanning(istream *stream);
+  CreadorPlanning(std::istream *stream);
 
   void omplePlanning();
 

@@ -7,7 +7,7 @@
 #include <stdexcept>
 #include <string>
 
-Assignatura::Assignatura(const string &nomAssignatura) {
+Assignatura::Assignatura(const std::string &nomAssignatura) {
   this -> nomAssignatura = nomAssignatura;
 }
 
@@ -26,19 +26,19 @@ void Assignatura::afegeixGrup (uint numeroGrup, bool esTeoric) {
   llistaGrups.insert(iteradorLlista,actual);
 }
 
-void Assignatura::afegeixSlotAGrup(uint numeroGrup, const string &hora, uint dia, const string &aula) {
+void Assignatura::afegeixSlotAGrup(uint numeroGrup, const std::string &hora, uint dia, const std::string &aula) {
   auto iterador = llistaGrups.end();
   while (iterador != llistaGrups.begin() and iterador -> getNumeroGrup() >= numeroGrup)
     --iterador;
   if ((++iterador) -> getNumeroGrup() == numeroGrup) {
-    string nomFitxer(__FILE__);
-    string linia = to_string(__LINE__);
-    throw runtime_error(nomFitxer.append(" ").append(linia).append(" : Hi ha dos grups amb el mateix numero."));
+    std::string nomFitxer(__FILE__);
+    std::string linia = std::to_string(__LINE__);
+    throw std::runtime_error(nomFitxer.append(" ").append(linia).append(" : Hi ha dos grups amb el mateix numero."));
   }
   --iterador;
   iterador -> afegeixSlot(hora,dia,aula);
 }
-string Assignatura::getNomAssignatura() {
+std::string Assignatura::getNomAssignatura() {
   return nomAssignatura;
 }
 

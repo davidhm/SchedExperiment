@@ -8,7 +8,7 @@
 int main () {
   std::ofstream escritor("./test.txt");
   EscritorProlog test(Planning(),"puyol");
-  escriuFitxerProlog(escritor);
-  escriuFitxerProlog(cout);
+  test.escriuFitxerProlog(escritor);
+  test.escriuFitxerProlog(std::cout);
 }
 #endif

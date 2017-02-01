@@ -10,11 +10,11 @@ class Grup {
 private:
   bool esGrupTeoric;
   uint numeroGrup;
-  list <Slot> slotsGrup;
+  std::list <Slot> slotsGrup;
 public:
   Grup(bool esGrupTeoric, uint numeroGrup);
 
-  void afegeixSlot(const string &hora, uint dia, const string &aula);
+  void afegeixSlot(const std::string &hora, uint dia, const std::string &aula);
 
   uint getNumeroGrup() const;
 };

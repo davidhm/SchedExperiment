@@ -13,9 +13,9 @@ private:
   */
   uint diaSetmana;
   Hora *horaSlot;
-  string aula;
+  std::string aula;
 public:
-  Slot(const string &hora, uint dia, const string &aula);
+  Slot(const std::string &hora, uint dia, const std::string &aula);
   ~Slot();
 };
 

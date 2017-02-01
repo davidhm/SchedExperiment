@@ -8,14 +8,14 @@
 
 class Assignatura {
 private:
-  string nomAssignatura;
-  list <Grup> llistaGrups;
+  std::string nomAssignatura;
+  std::list <Grup> llistaGrups;
 public:
-  Assignatura(const string &nomAssignatura);
+  Assignatura(const std::string &nomAssignatura);
   bool existeixGrup(uint numeroGrup);
   void afegeixGrup (uint numeroGrup, bool esTeoric);
-  void afegeixSlotAGrup(uint numeroGrup, const string &hora, uint dia, const string &aula);
-  string getNomAssignatura();
+  void afegeixSlotAGrup(uint numeroGrup, const std::string &hora, uint dia, const std::string &aula);
+  std::string getNomAssignatura();
 };
 
 #endif
