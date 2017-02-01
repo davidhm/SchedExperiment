@@ -9,7 +9,7 @@ typedef unsigned int uint;
 
 class Hora {
 private:
-  unsigned int slotHora;
+  uint slotHora;
 public:
   Hora();
   Hora(const std::string &hora);

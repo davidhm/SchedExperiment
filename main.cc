@@ -9,6 +9,5 @@ int main () {
   std::ofstream escritor("./test.txt");
   EscritorProlog test(Planning());
   test.escriuFitxerProlog(escritor);
-  test.escriuFitxerProlog(std::cout);
 }
 #endif

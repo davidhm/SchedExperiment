@@ -10,11 +10,8 @@
 
 
 
-CreadorPlanning::CreadorPlanning(std::istream &&stream) :
-llegidor(std::move(stream)),planning() {}
-
-CreadorPlanning::CreadorPlanning(std::istream stream) :
-llegidor(stream),planning() {}
+CreadorPlanning::CreadorPlanning(std::istream &llegidorArg) :
+llegidor(llegidorArg),planning() {}
 
 void CreadorPlanning::omplePlanning() {
   std::string linia;

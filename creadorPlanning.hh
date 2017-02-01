@@ -11,16 +11,13 @@
 
 class CreadorPlanning {
 private:
-  std::istream llegidor;
+  std::istream &llegidor;
   Planning planning;
 
 public:
-  CreadorPlanning(std::istream &&stream);
-  CreadorPlanning(std::istream stream);
+  CreadorPlanning(std::istream &llegidorArg);
   void omplePlanning();
-
   Planning getPlanning();
-
 };
 
 #endif

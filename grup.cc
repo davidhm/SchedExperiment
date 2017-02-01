@@ -5,12 +5,9 @@
 #include "grup.hh"
 #include <list>
 
+Grup::Grup(bool esGrupTeoric, uint numeroGrup) :
+esGrupTeoric(esGrupTeoric),numeroGrup(numeroGrup),slotsGrup() {}
 
-
-Grup::Grup(bool esGrupTeoric, uint numeroGrup) {
-  this -> esGrupTeoric = esGrupTeoric;
-  this -> numeroGrup = numeroGrup;
-}
 void Grup::afegeixSlot(const std::string &hora, uint dia, const std::string &aula) {
   Slot actual(hora,dia,aula);
   slotsGrup.push_back(actual);

@@ -7,9 +7,8 @@
 #include <stdexcept>
 #include <string>
 
-Assignatura::Assignatura(const std::string &nomAssignatura) {
-  this -> nomAssignatura = nomAssignatura;
-}
+Assignatura::Assignatura(const std::string &nomAssignatura) :
+nomAssignatura(nomAssignatura),llistaGrups() {}
 
 bool Assignatura::existeixGrup(uint numeroGrup) {
   auto iterador = llistaGrups.cbegin();

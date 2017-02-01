@@ -12,7 +12,7 @@ WARNING_FLAGS = -Wall -Weffc++ -pedantic  \
 -Wmissing-include-dirs -Wmissing-noreturn \
 -Wpacked -Wpointer-arith \
 -Wredundant-decls \
--Wshadow -Wstack-protector \
+-Wstack-protector \
 -Wstrict-aliasing=2 -Wswitch-default \
 -Wswitch-enum \
 -Wunreachable-code -Wunused \
@@ -23,8 +23,7 @@ COMPILE_FLAGS = $(WARNING_FLAGS) -std=c++11
 OBJECT_FLAGS = $(COMPILE_FLAGS) -c
 EXEC_NAME = scheduler.x
 
-all: creadorPlanning.o planning.o assignatura.o grup.o hora.o slot.o main.cc escritorProlog.o \
-	cinWrapper.o ifstreamWrapper.o
+all: creadorPlanning.o planning.o assignatura.o grup.o hora.o slot.o main.cc escritorProlog.o
 	$(CXX) -o $(EXEC_NAME) $(COMPILE_FLAGS) $^
 
 debug: COMPILE_FLAGS += -g -D_GLIBCXX_DEBUG
@@ -52,10 +51,4 @@ slot.o: slot.cc
 	$(CXX) $(OBJECT_FLAGS) $^
 
 escritorProlog.o: escritorProlog.cc
-	$(CXX) $(OBJECT_FLAGS) $^
-
-cinWrapper.o: cinWrapper.cc
-	$(CXX) $(OBJECT_FLAGS) $^
-
-ifstreamWrapper.o: ifstreamWrapper.cc
 	$(CXX) $(OBJECT_FLAGS) $^

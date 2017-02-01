@@ -5,9 +5,8 @@
 #include <string>
 #include <stdexcept>
 
-
-
-Hora::Hora(const std::string &hora) {
+Hora::Hora(const std::string &hora) :
+slotHora(){
   if (hora.length() > 5) {
     std::string nomFitxer(__FILE__);
     std::string linia = std::to_string(__LINE__);
