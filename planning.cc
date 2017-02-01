@@ -6,13 +6,17 @@
 #include <vector>
 #include <string>
 #include <stdexcept>
+#include <iostream>
 
-Planning::Planning() {}
+Planning::Planning() :
+assignatures(){
+  std::cout << "Creant default de Planning." << std::endl;
+}
 
 int Planning::trobaAssignatura(const std::string &nomAssignatura) {
   if (assignatures.size() == 0)
     return -1;
-  uint i = assignatures.size()-1;
+  int i = int(assignatures.size()-1);
   while (i >= 0 and assignatures.at(i).getNomAssignatura() != nomAssignatura)
     --i;
   return i >= 0 ? i : -1;

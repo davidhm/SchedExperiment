@@ -7,11 +7,10 @@
 
 class EscritorProlog {
 private:
-  Planning planning;
-  std::string pathFitxer;
-
+  Planning planningAEscriure;
 public:
-  EscritorProlog(const Planning &planning, const std::string &pathFitxer);
+  EscritorProlog(Planning planning);
+  EscritorProlog(Planning &&planning);
   void escriuFitxerProlog(std::ostream &escritor);
 };
 

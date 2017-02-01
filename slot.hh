@@ -11,12 +11,11 @@ private:
   /*
   Dilluns = 1, Dimarts = 2, Dimecres = 3, Dijous = 4, Divendres = 5.
   */
+  Hora horaSlot;
   uint diaSetmana;
-  Hora *horaSlot;
-  std::string aula;
+  std::string aulaSlot;
 public:
   Slot(const std::string &hora, uint dia, const std::string &aula);
-  ~Slot();
 };
 
 #endif

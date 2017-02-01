@@ -10,12 +10,15 @@
 
 
 
-CreadorPlanning::CreadorPlanning(std::istream *stream) {
-  llegidor = stream;
-}
+CreadorPlanning::CreadorPlanning(std::istream &&stream) :
+llegidor(std::move(stream)),planning() {}
+
+CreadorPlanning::CreadorPlanning(std::istream stream) :
+llegidor(stream),planning() {}
+
 void CreadorPlanning::omplePlanning() {
   std::string linia;
-  while (not (getline(*llegidor,linia).eof())) {
+  while (not (getline(llegidor,linia).eof())) {
     std::istringstream llegidorLinia(linia);
     std::string assignatura;
     llegidorLinia >> std::ws >> assignatura >> std::ws;
@@ -26,7 +29,8 @@ void CreadorPlanning::omplePlanning() {
     char laboOTeoria;
     std::string aula;
     bool esTeoric;
-    llegidorLinia >> std::ws >> grup >> std::ws >> dia >> std::ws >> hora >> std::ws >> laboOTeoria >> std::ws >> aula;
+    llegidorLinia >> std::ws >> grup >> std::ws >> dia >> std::ws;
+    llegidorLinia >> hora >> std::ws >> laboOTeoria >> std::ws >> aula;
     esTeoric = laboOTeoria == 'T';
     if (not planning.existeixGrupEnAssignatura(assignatura,grup)) {
       planning.afegeixGrupAssignatura(assignatura,grup,esTeoric);

@@ -11,8 +11,8 @@ class Hora {
 private:
   unsigned int slotHora;
 public:
+  Hora();
   Hora(const std::string &hora);
-
   uint getSlot() const;
 };
 
