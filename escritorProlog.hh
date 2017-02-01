@@ -1,5 +1,5 @@
-#ifndef ESCRITOR_FITXER_HH
-#define ESCRITOR_FITXER_HH
+#ifndef ESCRITOR_PROLOG_HH
+#define ESCRITOR_PROLOG_HH
 
 #include "planning.hh"
 #include <string>
