@@ -9,7 +9,7 @@ class EscritorProlog {
 private:
   Planning planningAEscriure;
 public:
-  EscritorProlog(Planning planning);
+  EscritorProlog(const Planning &planning);
   EscritorProlog(Planning &&planning);
   void escriuFitxerProlog(std::ostream &escritor);
 };

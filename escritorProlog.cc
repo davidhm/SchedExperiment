@@ -7,7 +7,7 @@
 #include <utility>
 #include <ostream>
 
-EscritorProlog::EscritorProlog(Planning planning) :
+EscritorProlog::EscritorProlog(const Planning &planning) :
 planningAEscriure(planning) {}
 
 EscritorProlog::EscritorProlog(Planning &&planning) :
