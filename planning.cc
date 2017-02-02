@@ -9,9 +9,7 @@
 #include <iostream>
 
 Planning::Planning() :
-assignatures(){
-  std::cout << "Creant default de Planning." << std::endl;
-}
+assignatures(){}
 
 int Planning::trobaAssignatura(const std::string &nomAssignatura) {
   if (assignatures.size() == 0)
@@ -56,6 +54,10 @@ uint dia, const std::string &aula) {
   if (i == -1)
     throw std::logic_error("Afegir slot grup assignatura: La assignatura no existeix.");
   assignatures.at(i).afegeixSlotAGrup(numeroGrup,hora,dia,aula);
+}
+
+list<uint> Planning::getGrupsTeoricsAssignatura(uint indexAssignatura) {
+  
 }
 
 #endif

@@ -5,6 +5,7 @@
 #include <string>
 #include <vector>
 
+typedef unsigned int uint;
 
 class Planning {
 private:
@@ -13,9 +14,9 @@ private:
 
 public:
   Planning();
-  bool existeixAssignatura(const std::string &nomAssignatura);
+  bool existeixAssignatura(const std::string &nomAssignatura) const;
 
-  bool existeixGrupEnAssignatura(const std::string &nomAssignatura, uint numeroGrup);
+  bool existeixGrupEnAssignatura(const std::string &nomAssignatura, uint numeroGrup) const;
 
   void afegeixAssignatura(const std::string &nomAssignatura);
 
@@ -23,6 +24,15 @@ public:
 
   void afegeixSlotGrupAssignatura(const std::string &nomAssignatura, uint numeroGrup, const std::string &hora,
   uint dia, const std::string &aula);
+
+  uint getNombreAssignatures();
+
+  list<uint> getGrupsTeoricsAssignatura(uint indexAssignatura);
+
+  list<uint> getGrupsLaboratoriAssignatura(uint indexAssignatura);
+
+  list<uint> getSlotsGrupAssignatura(uint indexAssignatura, uint grupAssignatura);
+
 };
 
 #endif
