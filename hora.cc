@@ -25,4 +25,8 @@ uint Hora::getSlot() const {
   return slotHora;
 }
 
+uint Hora::getNombreSlotsPerDia() {
+  return 13;
+}
+
 #endif

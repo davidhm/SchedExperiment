@@ -4,19 +4,25 @@
 #include "slot.hh"
 #include <list>
 
-
+typedef unsigned int uint;
 
 class Grup {
 private:
   bool esGrupTeoric;
-  uint numeroGrup;
+  uint nombreGrup;
   std::list <Slot> slotsGrup;
 public:
-  Grup(bool esGrupTeoric, uint numeroGrup);
+  Grup(uint nombreGrup);
+
+  Grup(bool esGrupTeoric, uint nombreGrup);
 
   void afegeixSlot(const std::string &hora, uint dia, const std::string &aula);
 
-  uint getNumeroGrup() const;
+  uint getNombreGrup() const;
+
+  std::list<uint> getSlotsNormalitzats() const;
+
+  bool operator==(const Grup &rhs) const;
 };
 
 #endif

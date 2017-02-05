@@ -14,6 +14,7 @@ public:
   Hora();
   Hora(const std::string &hora);
   uint getSlot() const;
+  static uint getNombreSlotsPerDia();
 };
 
 #endif

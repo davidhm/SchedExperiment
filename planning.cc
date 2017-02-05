@@ -11,7 +11,7 @@
 Planning::Planning() :
 assignatures(){}
 
-int Planning::trobaAssignatura(const std::string &nomAssignatura) {
+int Planning::trobaAssignatura(const std::string &nomAssignatura) const {
   if (assignatures.size() == 0)
     return -1;
   int i = int(assignatures.size()-1);
@@ -20,11 +20,11 @@ int Planning::trobaAssignatura(const std::string &nomAssignatura) {
   return i >= 0 ? i : -1;
 }
 
-bool Planning::existeixAssignatura(const std::string &nomAssignatura) {
+bool Planning::existeixAssignatura(const std::string &nomAssignatura) const {
   return trobaAssignatura(nomAssignatura) != -1;
 }
 
-bool Planning::existeixGrupEnAssignatura(const std::string &nomAssignatura, uint numeroGrup) {
+bool Planning::existeixGrupEnAssignatura(const std::string &nomAssignatura, uint numeroGrup) const {
   int i = trobaAssignatura(nomAssignatura);
   if (i == -1)
     return false;
@@ -56,8 +56,16 @@ uint dia, const std::string &aula) {
   assignatures.at(i).afegeixSlotAGrup(numeroGrup,hora,dia,aula);
 }
 
-list<uint> Planning::getGrupsTeoricsAssignatura(uint indexAssignatura) {
-  
+std::list<uint> Planning::getGrupsAssignatura(uint indexAssignatura) const {
+  return assignatures.at(indexAssignatura).getGrups();
+}
+
+uint Planning::getNombreAssignatures() const {
+  return static_cast<uint>(assignatures.size());
+}
+
+std::list<uint> Planning::getSlotsGrupAssignatura(uint indexAssignatura, uint grupAssignatura) const {
+  return assignatures.at(indexAssignatura).getSlotsGrup(grupAssignatura);
 }
 
 #endif

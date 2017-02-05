@@ -16,6 +16,7 @@ private:
   std::string aulaSlot;
 public:
   Slot(const std::string &hora, uint dia, const std::string &aula);
+  uint getSlotNormalitzat() const;
 };
 
 #endif

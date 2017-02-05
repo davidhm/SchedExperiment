@@ -4,13 +4,14 @@
 #include "assignatura.hh"
 #include <string>
 #include <vector>
+#include <list>
 
 typedef unsigned int uint;
 
 class Planning {
 private:
   std::vector <Assignatura> assignatures;
-  int trobaAssignatura(const std::string &nomAssignatura);
+  int trobaAssignatura(const std::string &nomAssignatura) const;
 
 public:
   Planning();
@@ -25,13 +26,11 @@ public:
   void afegeixSlotGrupAssignatura(const std::string &nomAssignatura, uint numeroGrup, const std::string &hora,
   uint dia, const std::string &aula);
 
-  uint getNombreAssignatures();
+  uint getNombreAssignatures() const;
 
-  list<uint> getGrupsTeoricsAssignatura(uint indexAssignatura);
+  std::list <uint> getGrupsAssignatura(uint indexAssignatura) const;
 
-  list<uint> getGrupsLaboratoriAssignatura(uint indexAssignatura);
-
-  list<uint> getSlotsGrupAssignatura(uint indexAssignatura, uint grupAssignatura);
+  std::list <uint> getSlotsGrupAssignatura(uint indexAssignatura, uint grupAssignatura) const;
 
 };
 
