@@ -61,7 +61,7 @@ std::list<uint> Planning::getGrupsAssignatura(uint indexAssignatura) const {
 }
 
 uint Planning::getNombreAssignatures() const {
-  return static_cast<uint>(assignatures.size());
+  return assignatures.size();
 }
 
 std::list<uint> Planning::getSlotsGrupAssignatura(uint indexAssignatura, uint grupAssignatura) const {

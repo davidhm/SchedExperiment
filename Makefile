@@ -1,6 +1,6 @@
 WARNING_FLAGS = -Wall -Weffc++ -pedantic  \
 -pedantic-errors -Wextra -Wcast-align \
--Wcast-qual -Wconversion \
+-Wcast-qual \
 -Wdisabled-optimization \
 -Werror -Wfloat-equal -Wformat=2 \
 -Wformat-nonliteral -Wformat-security  \

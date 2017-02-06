@@ -6,16 +6,19 @@
 #include <string>
 #include <utility>
 #include <ostream>
+#include <list>
 
-EscritorProlog::EscritorProlog(const Planning &planning) :
-planningAEscriure(planning) {}
+list <uint> EscritorProlog::
 
-EscritorProlog::EscritorProlog(Planning &&planning) :
-planningAEscriure() {
+
+EscritorProlog::EscritorProlog(const Planning &planning,PrologWritable &escritor) :
+planningAEscriure(planning),escritor(escritor) {}
+
+EscritorProlog::EscritorProlog(Planning &&planning,PrologWritable &escritor) :
+planningAEscriure(),escritor(escritor) {
   std::swap(planningAEscriure, planning);
 }
-void EscritorProlog::escriuFitxerProlog(std::ostream &escritor) {
-  escritor << "test" << std::endl;
-}
+
+EscritorProlog::
 
 #endif
