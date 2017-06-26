@@ -52,3 +52,6 @@ slot.o: slot.cc
 
 escritorProlog.o: escritorProlog.cc
 	$(CXX) $(OBJECT_FLAGS) $^
+
+defaultPrologWritable.o : defaultPrologWritable.cc
+	$(CXX) $(OBJECT_FLAGS) $^

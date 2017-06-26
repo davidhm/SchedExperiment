@@ -5,17 +5,17 @@
 #include <string>
 #include <ostream>
 #include "structsAuxiliars.hh"
+#include "prologWritable.hh"
 #include <list>
 
 class EscritorProlog {
 private:
   Planning planningAEscriure;
-  PrologWritable &escritor;
-  list<uint> getAssignaturesFormatejades();
-  list<GrupsAssignatura> getGrupsFormatejats();
+  std::list<uint> getAssignaturesFormatejades();
+  std::list<GrupsAssignatura> getGrupsFormatejats();
 public:
-  EscritorProlog(const Planning &planning,PrologWritable &escritor);
-  EscritorProlog(Planning &&planning,PrologWritable &escritor);
+  EscritorProlog(const Planning &planning);
+  EscritorProlog(Planning &&planning);
   void escriuFitxerProlog(PrologWritable &escritor);
 };
 

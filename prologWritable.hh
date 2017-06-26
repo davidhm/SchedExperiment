@@ -11,9 +11,10 @@ class PrologWritable {
 public:
   PrologWritable (const PrologWritable &other) = delete;
   PrologWritable& operator=(const PrologWritable &other) = delete;
-  virtual void escriuAssignatures(const list<uint> &assignatures) = 0;
-  virtual void escriuGrups(const list<GrupsAssignatura> &grupsArg) = 0;
-  virtual void escriuSlots(const list<GrupsAssignatura> &slotsArg) = 0;
+  virtual ~PrologWritable();
+  virtual void escriuAssignatures(const std::list<uint> &assignatures) = 0;
+  virtual void escriuGrups(const std::list<GrupsAssignatura> &grupsArg) = 0;
+  virtual void escriuSlots(const std::list<GrupsAssignatura> &slotsArg) = 0;
 };
 
 #endif
