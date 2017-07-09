@@ -3,6 +3,9 @@ import json
 
 headersRequest = {'Accept':'application/json',
 'client_id':'Hqyble56qaamSD2jzZcbO9BlYEM8zWPlQdNqFk4H'}
+subjectQueries = ['G','LP','APA','CAIM','AS']
+semester = '2017Q1'
+fileName = 'prologData.pl'
 
 def getSemesterJSONText():
     url = 'https://api.fib.upc.edu/v2/quadrimestres/'
@@ -45,6 +48,25 @@ def printSemesterSubjectsFromObject(subjectsObject):
             print(str(counter) + ': ' + subject)
             counter = counter + 1
 
-semesterObject = json.loads(getSemesterJSONText())
-subjectsObject = json.loads(getSemesterSubjectsJSONText(4,semesterObject))
-printSemesterSubjectsFromObject(subjectsObject)
+def getQueriesList():
+    url = ('https://api.fib.upc.edu/v2/quadrimestres/' + semester +
+    '/classes/'
+    par = str()
+    for query in subjectQueries:
+        par = par + query + ','
+    req = requests.get(url,headers = headersRequest,
+    parameters = {'codi_assig':par})
+    return json.loads(req.text)['results']
+
+def writePrologPredicates(queriesList):
+    with open('./' + fileName,'w') as f:
+        
+
+
+
+semesters = json.loads(getSemesterJSONText())
+subjects = json.loads(getSemesterSubjectsJSONText(4,semesters))
+for query in subjectQueries:
+    if query not in subjects['results']:
+        print('Query:',query,'not in semester')
+        quit()

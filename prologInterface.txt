@@ -1,0 +1,18 @@
+Denotes the number of subjects chosen, each
+subject is assigned a number between 1 and N.
+
+numberOfSubjects(N).
+
+Slots go from 1 to 45 (Mon 8AM to Fri 9PM).
+Each day has 9 slots (8AM-9AM to 8PM-9PM).
+The following predicate denotes the presence
+of a class in a slot.
+
+class(slot,subject).
+
+Optimization targets. Only afternoon and
+morning are mutually exclusive.
+
+minimizeLeisureTime.
+minimizeMorningTime.
+minimizeAfternoonTime.
