@@ -1,4 +1,4 @@
-:-include('./Predicates.pl').
+:-include('./fixedPredicates.pl').
 :-use_module(library(clpfd)).
 /*
 Format:
@@ -18,21 +18,19 @@ latestHours.
 - Maximizes number of hours between 8:00 and the first hour.
 */
 
-isTheoryGroup(G):- X is G mod 10, X = 0.
-isLabGroup(G):- \+isTheoryGroup(G).
+subject(S):- numberOfSubjects(N), between(1,N,S).
+
 
 main:-
-  findall(X,subject(X),ListSubjects),
-  defineVars(Vars,ListSubjects),
+  defineVars(Vars),
   defineDomains(Vars,ListSubjects),
   defineConstraints(Vars,ListSubjects),
   label(Vars),
   write(Vars),nl.
 
-defineVars(Vars,ListSubjects):-
-  length(ListSubjects,N),
-  N1 is N*2,
-  length(Vars,N1).
+defineVars(Vars):-
+  totalNumberOfSlots(N),
+  length(Vars,N).
 
 defineDomains([Teoria,Lab|Vars],[Subj|ListSubjects]):-
   findall(X,theoryGroup(Subj,X),L1),

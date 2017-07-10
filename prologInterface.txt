@@ -3,12 +3,17 @@ subject is assigned a number between 1 and N.
 
 numberOfSubjects(N).
 
+Subject 'subject' has group 'group' and
+is theoretic 'theory' or no.
+
+group(subject,group,theory).
+
 Slots go from 1 to 45 (Mon 8AM to Fri 9PM).
 Each day has 9 slots (8AM-9AM to 8PM-9PM).
 The following predicate denotes the presence
 of a class in a slot.
 
-class(slot,subject).
+class(slot,subject,group).
 
 Optimization targets. Only afternoon and
 morning are mutually exclusive.
@@ -16,3 +21,12 @@ morning are mutually exclusive.
 minimizeLeisureTime.
 minimizeMorningTime.
 minimizeAfternoonTime.
+
+Predicates denoting the minimum and maximum
+hour over all days and the minimum and maximum
+day.
+
+earliestStartingHour(_).
+latestStartingHour(_).
+earliestDay(_).
+latestDay(_).
