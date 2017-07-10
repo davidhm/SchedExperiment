@@ -23,8 +23,8 @@ subject(S):- numberOfSubjects(N), between(1,N,S).
 
 main:-
   defineVars(Vars),
-  defineDomains(Vars,ListSubjects),
-  defineConstraints(Vars,ListSubjects),
+  defineDomains(Vars,1),
+  defineConstraints(Vars),
   label(Vars),
   write(Vars),nl.
 
@@ -32,69 +32,27 @@ defineVars(Vars):-
   totalNumberOfSlots(N),
   length(Vars,N).
 
-defineDomains([Teoria,Lab|Vars],[Subj|ListSubjects]):-
-  findall(X,theoryGroup(Subj,X),L1),
-  length(L1,N),
-  Teoria in 1..N,
-  findall(Y,labGroup(Subj,Y),L2),
-  length(L2,M),
-  Lab in 1..M,
-  defineDomains(Vars,ListSubjects).
+defineDomains([S|Vars],Slot):-
+  findall(Slot,class(Slot,_,_),L),
+  length(L,M),
+  M >= 1,
+  S in 1..M,
+  Slot2 is Slot + 1,
+  defineDomains(Vars,Slot2).
 
-defineDomains([],[]).
+defineDomains([S|Vars],Slot):-
+  findall(Slot,class(Slot,_,_),L),
+  length(L,M),
+  M =:= 0,
+  S in 0,
+  Slot2 is Slot + 1,
+  defineDomains(Vars,Slot2).
 
-defineConstraints(Vars,ListSubjects):-
-  noOverlapping(Vars,ListSubjects).
+defineDomains([],_).
 
-noOverlapping([Theory,Lab|Vars],[X|ListSubjects]):-
-  findall(H1,class(X,Theory,H1),TheoryHours),
-  findall(S1-G1,(member(Y1,TheoryHours),class(S1,G1,Y1),S1\=X),IncompatTheory),
-  forceDifferent(X-Theory,IncompatTheory,Vars),
-  findall(H2,class(X,Lab,H2),LabHours),
-  findall(S2-G2,(member(Y2,LabHours),class(S2,G2,Y2),S2\=X),IncompatLab),
-  forceDifferent(X-Lab,IncompatLab,Vars),
-  noOverlapping(Vars,ListSubjects).
+defineConstraints(Vars):-
+  enforceConsistency(Vars,1).
 
-noOverlapping([],[]).
-
-forceDifferent(Subj-Group,[S-G|Incompat],Vars):-
-  isTheoryGroup(G),
-  IndexOther is (S-1)*2+1,
-  nth1(IndexOther,Vars,OtherVar),
-  isTheoryGroup(Group),
-  IndexOrig is (Subj-1)*2+1,
-  nth1(IndexOrig,Vars,OrigVar),
-  OrigVar #\= Group #\/ OtherVar #\= G,
-  forceDifferent(Subj-Group,Incompat,Vars).
-
-forceDifferent(Subj-Group,[S-G|Incompat],Vars):-
-  isLabGroup(G),
-  IndexOther is S*2,
-  nth1(IndexOther,Vars,OtherVar),
-  isTheoryGroup(Group),
-  IndexOrig is (Subj-1)*2+1,
-  nth1(IndexOrig,Vars,OrigVar),
-  OrigVar #\= Group #\/ OtherVar #\= G,
-  forceDifferent(Subj-Group,Incompat,Vars).
-
-forceDifferent(Subj-Group,[S-G|Incompat],Vars):-
-  isTheoryGroup(G),
-  IndexOther is (S-1)*2+1,
-  nth1(IndexOther,Vars,OtherVar),
-  isLabGroup(Group),
-  IndexOrig is Subj*2,
-  nth1(IndexOrig,Vars,OrigVar),
-  OrigVar #\= Group #\/ OtherVar #\= G,
-  forceDifferent(Subj-Group,Incompat,Vars).
-
-forceDifferent(Subj-Group,[S-G|Incompat],Vars):-
-  isLabGroup(G),
-  IndexOther is S*2,
-  nth1(IndexOther,Vars,OtherVar),
-  isLabGroup(Group),
-  IndexOrig is Subj*2,
-  nth1(IndexOrig,Vars,OrigVar),
-  OrigVar #\= Group #\/ OtherVar #\= G,
-  forceDifferent(Subj-Group,Incompat,Vars).
-
-forceDifferent(_,[],_).
+enforceConsistency([S|Vars],Slot):-
+  findall([S,G],class(Slot,S,G),L),
+  
