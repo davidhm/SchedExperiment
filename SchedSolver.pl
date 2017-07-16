@@ -23,10 +23,23 @@ subject(S):- numberOfSubjects(N), between(1,N,S).
 main:-
   defineVars(Vars),
   defineDomains(Vars,1,Domains),
-  %writeDomains(1,Domains),
-  defineConstraints(Vars,Domains),
-  label(Vars).
-  %write(Vars),nl.
+  writeDomains(1,Domains),
+  defineConstraints(Vars,Domains,Indicative),
+  label(Vars),
+  writeIndicative(Indicative,1),
+  write(Vars),nl.
+
+writeIndicative([[X,Y]|Indicative],Subject):-
+  numberOfSubjects(N),
+  Subject =< N,
+  write('Subject '),write(Subject),write(' theory indicative: '),
+  write(X),nl,
+  write('Subject '),write(Subject),write(' lab indicative: '),
+  write(Y),nl,
+  Subject2 is Subject + 1,
+  writeIndicative(Indicative,Subject2).
+
+writeIndicative([],_).
 
 writeDomains(VarNumber,[X|Domains]):-
   write('Variable '), write(VarNumber), write(': '),
@@ -59,9 +72,9 @@ defineDomains([S|Vars],Slot,[L|Tail]):-
 
 defineDomains([],_,[]).
 
-defineConstraints(Vars,Domains):-
+defineConstraints(Vars,Domains,Indicative):-
   enforceConsistency(Vars,Domains,1),
-  groupsExactlyOnce(Vars,Domains,1).
+  groupsExactlyOnce(Vars,Domains,1,Indicative).
 
 enforceConsistency(Vars,Domains,Subject):-
   numberOfSubjects(N),
@@ -99,29 +112,33 @@ iterateThrough(Vars,Domains,Subject,Group,First,[X|Rest]):-
 
 iterateThrough(_,_,_,_,_,[]).
 
-groupsExactlyOnce(Vars,Domains,CurrentSubject):-
+groupsExactlyOnce(Vars,Domains,CurrentSubject,[[X,Y]|Indicative]):-
   numberOfSubjects(N),
   CurrentSubject =< N,
   findall(G,group(CurrentSubject,G,1),L),
-  theoryGroupsCardinality(Vars,CurrentSubject,Domains,L),
+  theoryGroupsCardinality(Vars,CurrentSubject,Domains,L,X),
   findall(GLab,group(CurrentSubject,GLab,0),L2),
-  labGroupsCardinality(Vars,CurrentSubject,Domains,L2),
+  labGroupsCardinality(Vars,CurrentSubject,Domains,L2,Y),
   CurrentSubject2 is CurrentSubject + 1,
-  groupsExactlyOnce(Vars,Domains,CurrentSubject2).
+  groupsExactlyOnce(Vars,Domains,CurrentSubject2,Indicative).
 
-groupsExactlyOnce(_,_,_).
+groupsExactlyOnce(_,_,_,_).
 
-theoryGroupsCardinality(Vars,Subject,Domains,[X|Groups]):-
+theoryGroupsCardinality(Vars,Subject,Domains,[X|Groups],Indicative):-
   findall(Slot,class(Slot,Subject,X),L),
   length(L,M),
+  write('Subject '),write(Subject),write(', theory group '),write(X),
+  write(' has '),write(M), write(' slots'),nl,
   length(Vars,N),
   length(Indicative,N),
   bindIndicativeVars(Vars,Subject,Domains,[X|Groups],Indicative),
   sum(Indicative,#=,M).
 
-labGroupsCardinality(Vars,Subject,Domains,[X|Groups]):-
+labGroupsCardinality(Vars,Subject,Domains,[X|Groups],Indicative):-
   findall(Slot,class(Slot,Subject,X),L),
   length(L,M),
+  write('Subject '),write(Subject),write(', lab group '),write(X),
+  write(' has '),write(M), write(' slots'),nl,
   length(Vars,N),
   length(Indicative,N),
   bindIndicativeVars(Vars,Subject,Domains,[X|Groups],Indicative),
@@ -134,57 +151,12 @@ bindIndicativeVars(Vars,Subject,Domains,Groups,Indicative):-
   nth1(S,Domains,ListOfClasses),
   nth1(Idx,ListOfClasses,[Subject,X]),
   nth1(S,Indicative,I),
-  write('Slot '),write(V),write(' bound to index '),write(Idx),nl,
-  V #= Idx #==> I #= 1
-  )).
+  V #= Idx #==> I #= 1,
+  V #\= Idx #==> I #= 0
+  )),
+  latestStartingHour(H),
+  forall((between(1,H,Y),\+class(Y,Subject,_)),
+  (nth1(Y,Indicative,Id),
+  Id #= 0)).
 
 bindIndicativeVars(_,_,_,_,_).
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
