@@ -3,7 +3,7 @@ import json
 
 headersRequest = {'Accept':'application/json',
 'client_id':'Hqyble56qaamSD2jzZcbO9BlYEM8zWPlQdNqFk4H'}
-subjectQueries = ['G','LP','APA','CAIM','AS']
+subjectQueries = ['G','LP','AS','CCQ']
 semester = '2017Q1'
 fileName = 'prologData.pl'
 
@@ -50,17 +50,72 @@ def printSemesterSubjectsFromObject(subjectsObject):
 
 def getQueriesList():
     url = ('https://api.fib.upc.edu/v2/quadrimestres/' + semester +
-    '/classes/'
-    par = str()
+    '/classes/')
+    param = ''
     for query in subjectQueries:
-        par = par + query + ','
+        param = param + query + ','
     req = requests.get(url,headers = headersRequest,
-    parameters = {'codi_assig':par})
+    params = {'codi_assig':param})
     return json.loads(req.text)['results']
+
+def getSlotFromHourAndDay(hour,day):
+    return int(hour[0:2])-7 + (day-1)*13
+
+def writeCommonPrologPredicates(fileObject,queriesList):
+    print('numberOfSubjects({}).'.format(len(subjectQueries)),file=fileObject)
+    minSlot = 66
+    maxSlot = 0
+    minDay = 6
+    maxDay = 0
+    for entry in queriesList:
+        valorSlot = getSlotFromHourAndDay(entry['inici'],
+        entry['dia_setmana'])
+        if valorSlot < minSlot:
+            minSlot = valorSlot
+        if valorSlot > maxSlot:
+            maxSlot = valorSlot
+        if entry['dia_setmana'] < minDay:
+            minDay = entry['dia_setmana']
+        if entry['dia_setmana'] > maxDay:
+            maxDay = entry['dia_setmana']
+    print('earliestStartingHour({}).'.format(minSlot),
+    'latestStartingHour({}).'.format(maxSlot),
+    'earliestDay({}).'.format(minDay),
+    'latestDay({}).'.format(maxDay),sep='\n',file=fileObject)
+
+def writeQueryPredicates(fileObject,queriesList):
+    subjectGroupSet = set()
+    for slot in queriesList:
+        subjectIndex = subjectQueries.index(slot['codi_assig']) + 1
+        subjectGroup = slot['grup']
+        if str(subjectIndex) + subjectGroup not in subjectGroupSet:
+            subjectGroupSet.add(str(subjectIndex) + subjectGroup)
+            theory = slot['tipus'] == 'T'
+            theoryBit = str()
+            if theory:
+                theoryBit = '1'
+            else:
+                theoryBit = '0'
+            print('group(' + str(subjectIndex) +
+            ',' + subjectGroup + ',' + theoryBit + ').'
+            ,file=fileObject)
+        slotNumber = getSlotFromHourAndDay(slot['inici'],slot['dia_setmana'])
+        for i in range(slotNumber,slotNumber+slot['durada']):
+            print('class(' + str(i) + ',' +
+            str(subjectIndex) + ',' + subjectGroup +
+            ').',file=fileObject)
+
+
 
 def writePrologPredicates(queriesList):
     with open('./' + fileName,'w') as f:
-        
+        writeCommonPrologPredicates(f,queriesList)
+        writeQueryPredicates(f,queriesList)
+
+
+
+
+
 
 
 
@@ -70,3 +125,5 @@ for query in subjectQueries:
     if query not in subjects['results']:
         print('Query:',query,'not in semester')
         quit()
+writePrologPredicates(getQueriesList())
+

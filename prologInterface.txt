@@ -8,8 +8,8 @@ is theoretic 'theory' or no.
 
 group(subject,group,theory).
 
-Slots go from 1 to 45 (Mon 8AM to Fri 9PM).
-Each day has 9 slots (8AM-9AM to 8PM-9PM).
+Slots go from 1 to 65 (Mon 8AM to Fri 9PM).
+Each day has 13 slots (8AM-9AM to 8PM-9PM).
 The following predicate denotes the presence
 of a class in a slot.
 
