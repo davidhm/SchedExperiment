@@ -24,22 +24,9 @@ main:-
   defineVars(Vars),
   defineDomains(Vars,1,Domains),
   writeDomains(1,Domains),
-  defineConstraints(Vars,Domains,Indicative),
+  defineConstraints(Vars,Domains),
   label(Vars),
-  writeIndicative(Indicative,1),
   write(Vars),nl.
-
-writeIndicative([[X,Y]|Indicative],Subject):-
-  numberOfSubjects(N),
-  Subject =< N,
-  write('Subject '),write(Subject),write(' theory indicative: '),
-  write(X),nl,
-  write('Subject '),write(Subject),write(' lab indicative: '),
-  write(Y),nl,
-  Subject2 is Subject + 1,
-  writeIndicative(Indicative,Subject2).
-
-writeIndicative([],_).
 
 writeDomains(VarNumber,[X|Domains]):-
   write('Variable '), write(VarNumber), write(': '),
@@ -66,15 +53,15 @@ defineDomains([S|Vars],Slot,[L|Tail]):-
   findall(Slot,class(Slot,_,_),L),
   length(L,M),
   M =:= 0,
-  S in 0,
+  S #= 0,
   Slot2 is Slot + 1,
   defineDomains(Vars,Slot2,Tail).
 
 defineDomains([],_,[]).
 
-defineConstraints(Vars,Domains,Indicative):-
+defineConstraints(Vars,Domains):-
   enforceConsistency(Vars,Domains,1),
-  groupsExactlyOnce(Vars,Domains,1,Indicative).
+  onlyOneGroup(Vars,Domains,1).
 
 enforceConsistency(Vars,Domains,Subject):-
   numberOfSubjects(N),
@@ -112,51 +99,83 @@ iterateThrough(Vars,Domains,Subject,Group,First,[X|Rest]):-
 
 iterateThrough(_,_,_,_,_,[]).
 
-groupsExactlyOnce(Vars,Domains,CurrentSubject,[[X,Y]|Indicative]):-
+onlyOneGroup(Vars,Domains,CurrentSubject):-
   numberOfSubjects(N),
   CurrentSubject =< N,
-  findall(G,group(CurrentSubject,G,1),L),
-  theoryGroupsCardinality(Vars,CurrentSubject,Domains,L,X),
-  findall(GLab,group(CurrentSubject,GLab,0),L2),
-  labGroupsCardinality(Vars,CurrentSubject,Domains,L2,Y),
-  CurrentSubject2 is CurrentSubject + 1,
-  groupsExactlyOnce(Vars,Domains,CurrentSubject2,Indicative).
+  findall(GTheory,group(CurrentSubject,GTheory,1),LTheory),
+  auxOnlyOneGroup(Vars,Domains,CurrentSubject,LTheory),
+  findall(GLab,group(CurrentSubject,GLab,0),LLab),
+  auxOnlyOneGroup(Vars,Domains,CurrentSubject,LLab),
+  Subj2 is CurrentSubject + 1,
+  onlyOneGroup(Vars,Domains,Subj2).
 
-groupsExactlyOnce(_,_,_,_).
+onlyOneGroup(_,_,_).
 
-theoryGroupsCardinality(Vars,Subject,Domains,[X|Groups],Indicative):-
-  findall(Slot,class(Slot,Subject,X),L),
-  length(L,M),
-  write('Subject '),write(Subject),write(', theory group '),write(X),
-  write(' has '),write(M), write(' slots'),nl,
-  length(Vars,N),
-  length(Indicative,N),
-  bindIndicativeVars(Vars,Subject,Domains,[X|Groups],Indicative),
-  sum(Indicative,#=,M).
+auxOnlyOneGroup(Vars,Domains,CurrentSubject,[G|Groups]):-
+  findall(S1,class(S1,CurrentSubject,G),L1),
+  findall([S2,G2],(member(G2,Groups),class(S2,CurrentSubject,G2)),L2),
+  iterateExclusion(Vars,Domains,CurrentSubject,G,L1,L2),
+  auxOnlyOneGroup(Vars,Domains,CurrentSubject,Groups).
 
-labGroupsCardinality(Vars,Subject,Domains,[X|Groups],Indicative):-
-  findall(Slot,class(Slot,Subject,X),L),
-  length(L,M),
-  write('Subject '),write(Subject),write(', lab group '),write(X),
-  write(' has '),write(M), write(' slots'),nl,
-  length(Vars,N),
-  length(Indicative,N),
-  bindIndicativeVars(Vars,Subject,Domains,[X|Groups],Indicative),
-  sum(Indicative,#=,M).
+auxOnlyOneGroup(_,_,_,[]).
 
-bindIndicativeVars(Vars,Subject,Domains,Groups,Indicative):-
-  findall([Slot,X],(member(X,Groups),class(Slot,Subject,X)),L),
-  forall(member([S,X],L),(
-  nth1(S,Vars,V),
-  nth1(S,Domains,ListOfClasses),
-  nth1(Idx,ListOfClasses,[Subject,X]),
-  nth1(S,Indicative,I),
-  V #= Idx #==> I #= 1,
-  V #\= Idx #==> I #= 0
-  )),
-  latestStartingHour(H),
-  forall((between(1,H,Y),\+class(Y,Subject,_)),
-  (nth1(Y,Indicative,Id),
-  Id #= 0)).
+iterateExclusion(Vars,Domains,Subject,G1,[X|RestOfSlots],GroupAndSlot):-
+  auxIterate(Vars,Domains,Subject,G1,X,GroupAndSlot),
+  iterateExclusion(Vars,Domains,Subject,G1,RestOfSlots,GroupAndSlot).
 
-bindIndicativeVars(_,_,_,_,_).
+iterateExclusion(_,_,_,_,[],_).
+
+auxIterate(Vars,Domains,Subj,G1,CurrentSlot,[[S2,G2]|RestOfPairs]):-
+  nth1(CurrentSlot,Vars,FirstVar),
+  nth1(S2,Vars,SecondVar),
+  nth1(CurrentSlot,Domains,FirstList),
+  nth1(S2,Domains,SecondList),
+  nth1(FirstIndex,FirstList,[Subj,G1]),
+  nth1(SecondIndex,SecondList,[Subj,G2]),
+  /*write('Slot '), write(CurrentSlot), write(' #= '),
+  write(FirstIndex), write(' #==> '), write('Slot '),write(S2),
+  write(' #\\= '),write(SecondIndex),nl,
+  write('Slot '), write(S2), write(' #= '),
+  write(SecondIndex), write(' #==> '), write('Slot '),write(CurrentSlot),
+  write(' #\\= '),write(FirstIndex),nl,*/
+  FirstVar #= FirstIndex #==> SecondVar #\=  SecondIndex,
+  SecondVar #= SecondIndex #==> FirstVar #\= FirstIndex,
+  auxIterate(Vars,Domains,Subj,G1,CurrentSlot,RestOfPairs).
+
+auxIterate(_,_,_,_,_,[]).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
