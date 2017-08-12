@@ -1,5 +1,7 @@
 :-include('./prologData.pl').
 :-use_module(library(clpfd)).
+:- discontiguous
+  class/3, group/3.
 /*
 Format:
 subject(number).
@@ -19,130 +21,126 @@ latestHours.
 */
 
 subject(S):- numberOfSubjects(N), between(1,N,S).
+isTheoryGroup(Group):- 0 #= Group mod 10.
+isLabGroup(Group):- \+ isTheoryGroup(Group).
+groupIndex(Group,_,Index):-
+  isTheoryGroup(Group),
+  Index #= div(Group,10).
+groupIndex(Group,Subject,Index):-
+  isLabGroup(Group),
+  findall(G,group(Subject,G,0),L),
+  sort(L,Sorted),
+  nth1(Index,Sorted,Group).
 
 main:-
   defineVars(Vars),
-  defineDomains(Vars,1,Domains),
-  writeDomains(1,Domains),
-  defineConstraints(Vars,Domains),
+  defineDomains(Vars,1),
+  noOverlapping(Vars,1),
   label(Vars),
-  write(Vars),nl.
-
-writeDomains(VarNumber,[X|Domains]):-
-  write('Variable '), write(VarNumber), write(': '),
-  write(X), nl,
-  VarNumber2 is VarNumber + 1,
-  writeDomains(VarNumber2,Domains).
-
-writeDomains(_,[]).
+  write(Vars).
 
 defineVars(Vars):-
-  latestStartingHour(N),
-  length(Vars,N).
+  numberOfSubjects(N),
+  M is 2*N,
+  length(Vars,M).
 
-defineDomains([S|Vars],Slot,[L|Tail]):-
-  findall([Subject,Group],
-  class(Slot,Subject,Group),L),
-  length(L,M),
+defineDomains([T,L|Vars],Subj):-
+  findall(G,group(Subj,G,1),TheoryList),
+  length(TheoryList,N),
+  T in 1..N,
+  findall(G2,group(Subj,G2,0),LabList),
+  length(LabList,M),
   M >= 1,
-  S in 1..M,
-  Slot2 is Slot + 1,
-  defineDomains(Vars,Slot2,Tail).
+  L in 1..M,
+  Subj2 is Subj + 1,
+  defineDomains(Vars,Subj2).
 
-defineDomains([S|Vars],Slot,[L|Tail]):-
-  findall(Slot,class(Slot,_,_),L),
-  length(L,M),
-  M =:= 0,
-  S #= 0,
-  Slot2 is Slot + 1,
-  defineDomains(Vars,Slot2,Tail).
+defineDomains([T,L|Vars],Subj):-
+  findall(G,group(Subj,G,1),TheoryList),
+  length(TheoryList,N),
+  T in 1..N,
+  findall(G2,group(Subj,G2,0),LabList),
+  length(LabList,M),
+  M #= 0,
+  L #= 0,
+  Subj2 is Subj + 1,
+  defineDomains(Vars,Subj2).
 
-defineDomains([],_,[]).
+defineDomains([],_).
 
-defineConstraints(Vars,Domains):-
-  enforceConsistency(Vars,Domains,1),
-  onlyOneGroup(Vars,Domains,1).
+noOverlapping(Vars,Slot):-
+  latestStartingHour(H),
+  Slot =< H,
+  findall(S-G,class(Slot,S,G),L),
+  findall([S1-G1,S2-G2],
+  (member(S1-G1,L),member(S2-G2,L), S1 \= S2),Pairs),
+  excludeConflicting(Vars,Pairs),
+  Slot2 #= Slot + 1,
+  noOverlapping(Vars,Slot2).
 
-enforceConsistency(Vars,Domains,Subject):-
-  numberOfSubjects(N),
-  Subject =< N,
-  findall(G,group(Subject,G,_),L),
-  forceEqual(Vars,Domains,Subject,L),
-  Subject2 is Subject + 1,
-  enforceConsistency(Vars,Domains,Subject2).
+noOverlapping(_,Slot):-
+  latestStartingHour(H),
+  Slot > H.
 
-enforceConsistency(_,_,_).
+excludeConflicting(Vars,[[S1-G1,S2-G2]|Pairs]):-
+  Aux1 #= 1 + (S1-1)*2,
+  Aux2 #= 1 + (S2-1)*2,
+  nth1(Aux1,Vars,T1),
+  nth1(Aux2,Vars,T2),
+  isTheoryGroup(G1),
+  isTheoryGroup(G2),
+  groupIndex(G1,S1,FirstIndex),
+  groupIndex(G2,S2,SecondIndex),
+  T1 #= FirstIndex #==> T2 #\= SecondIndex,
+  excludeConflicting(Vars,Pairs).
+
+excludeConflicting(Vars,[[S1-G1,S2-G2]|Pairs]):-
+  Aux1 #= 1 + (S1-1)*2,
+  Aux2 #= 2 + (S2-1)*2,
+  nth1(Aux1,Vars,T1),
+  nth1(Aux2,Vars,L2),
+  isTheoryGroup(G1),
+  isLabGroup(G2),
+  groupIndex(G1,S1,FirstIndex),
+  groupIndex(G2,S2,SecondIndex),
+  T1 #= FirstIndex #==> L2 #\= SecondIndex,
+  excludeConflicting(Vars,Pairs).
+
+excludeConflicting(Vars,[[S1-G1,S2-G2]|Pairs]):-
+  Aux1 #= 2 + (S1-1)*2,
+  Aux2 #= 1 + (S2-1)*2,
+  nth1(Aux1,Vars,L1),
+  nth1(Aux2,Vars,T2),
+  isLabGroup(G1),
+  isTheoryGroup(G2),
+  groupIndex(G1,S1,FirstIndex),
+  groupIndex(G2,S2,SecondIndex),
+  L1 #= FirstIndex #==> T2 #\= SecondIndex,
+  excludeConflicting(Vars,Pairs).
+
+excludeConflicting(Vars,[[S1-G1,S2-G2]|Pairs]):-
+  Aux1 #= 2 + (S1-1)*2,
+  Aux2 #= 2 + (S2-1)*2,
+  nth1(Aux1,Vars,L1),
+  nth1(Aux2,Vars,L2),
+  isLabGroup(G1),
+  isLabGroup(G2),
+  groupIndex(G1,S1,FirstIndex),
+  groupIndex(G2,S2,SecondIndex),
+  L1 #= FirstIndex #==> L2 #\= SecondIndex,
+  excludeConflicting(Vars,Pairs).
+
+excludeConflicting(_,[]).
 
 
-forceEqual(Vars,Domains,Subject,[G|ListGroups]):-
-  findall(Slot,class(Slot,Subject,G),L),
-  auxEqual(Vars,Domains,Subject,G,L),
-  forceEqual(Vars,Domains,Subject,ListGroups).
 
-forceEqual(_,_,_,[]).
 
-auxEqual(Vars,Domains,Subject,Group,[S|Slots]):-
-  iterateThrough(Vars,Domains,Subject,Group,S,Slots),
-  auxEqual(Vars,Domains,Subject,Group,Slots).
 
-auxEqual(_,_,_,_,[]).
 
-iterateThrough(Vars,Domains,Subject,Group,First,[X|Rest]):-
-  nth1(First,Vars,FirstElement),
-  nth1(X,Vars,SecondElement),
-  nth1(First,Domains,FirstList),
-  nth1(X,Domains,SecondList),
-  nth1(FirstIndex,FirstList,[Subject,Group]),
-  nth1(SecondIndex,SecondList,[Subject,Group]),
-  FirstElement #= FirstIndex #<==> SecondElement #= SecondIndex,
-  iterateThrough(Vars,Domains,Subject,Group,First,Rest).
 
-iterateThrough(_,_,_,_,_,[]).
 
-onlyOneGroup(Vars,Domains,CurrentSubject):-
-  numberOfSubjects(N),
-  CurrentSubject =< N,
-  findall(GTheory,group(CurrentSubject,GTheory,1),LTheory),
-  auxOnlyOneGroup(Vars,Domains,CurrentSubject,LTheory),
-  findall(GLab,group(CurrentSubject,GLab,0),LLab),
-  auxOnlyOneGroup(Vars,Domains,CurrentSubject,LLab),
-  Subj2 is CurrentSubject + 1,
-  onlyOneGroup(Vars,Domains,Subj2).
 
-onlyOneGroup(_,_,_).
 
-auxOnlyOneGroup(Vars,Domains,CurrentSubject,[G|Groups]):-
-  findall(S1,class(S1,CurrentSubject,G),L1),
-  findall([S2,G2],(member(G2,Groups),class(S2,CurrentSubject,G2)),L2),
-  iterateExclusion(Vars,Domains,CurrentSubject,G,L1,L2),
-  auxOnlyOneGroup(Vars,Domains,CurrentSubject,Groups).
-
-auxOnlyOneGroup(_,_,_,[]).
-
-iterateExclusion(Vars,Domains,Subject,G1,[X|RestOfSlots],GroupAndSlot):-
-  auxIterate(Vars,Domains,Subject,G1,X,GroupAndSlot),
-  iterateExclusion(Vars,Domains,Subject,G1,RestOfSlots,GroupAndSlot).
-
-iterateExclusion(_,_,_,_,[],_).
-
-auxIterate(Vars,Domains,Subj,G1,CurrentSlot,[[S2,G2]|RestOfPairs]):-
-  nth1(CurrentSlot,Vars,FirstVar),
-  nth1(S2,Vars,SecondVar),
-  nth1(CurrentSlot,Domains,FirstList),
-  nth1(S2,Domains,SecondList),
-  nth1(FirstIndex,FirstList,[Subj,G1]),
-  nth1(SecondIndex,SecondList,[Subj,G2]),
-  /*write('Slot '), write(CurrentSlot), write(' #= '),
-  write(FirstIndex), write(' #==> '), write('Slot '),write(S2),
-  write(' #\\= '),write(SecondIndex),nl,
-  write('Slot '), write(S2), write(' #= '),
-  write(SecondIndex), write(' #==> '), write('Slot '),write(CurrentSlot),
-  write(' #\\= '),write(FirstIndex),nl,*/
-  FirstVar #= FirstIndex #==> SecondVar #\=  SecondIndex,
-  SecondVar #= SecondIndex #==> FirstVar #\= FirstIndex,
-  auxIterate(Vars,Domains,Subj,G1,CurrentSlot,RestOfPairs).
-
-auxIterate(_,_,_,_,_,[]).
 
 
 

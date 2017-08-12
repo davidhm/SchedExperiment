@@ -3,7 +3,7 @@ import json
 
 headersRequest = {'Accept':'application/json',
 'client_id':'Hqyble56qaamSD2jzZcbO9BlYEM8zWPlQdNqFk4H'}
-subjectQueries = ['G','LP','AS','CCQ']
+subjectQueries = ['G','LP','AS','CCQ','DBD']
 semester = '2017Q1'
 fileName = 'prologData.pl'
 
