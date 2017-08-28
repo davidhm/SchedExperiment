@@ -1,3 +1,5 @@
+var subjects;
+
 function addSubject(subject) {
   var oldHtml = $("#selectedSubjects").html();
   $("#selectedSubjects").html(
@@ -6,41 +8,38 @@ function addSubject(subject) {
   );
 }
 
-function changeTabToEnter() {
-  $("#searchSubject").on("keydown",function(key){
-    if (key.which = 9) {
-      var e = jQuery.Event("keydown");
-      e.which = 13;
-      $("input").trigger(e);
-    }
-  })
-}
-
-function setUpMaterialize() {
+function setUpAutocomplete() {
+  var selectedSemester = $("#selectSemester").find(":selected").text();
+  var aux = {};
+  $.get("/cgi-bin/getSemesterSubjects.py",{sem: selectedSemester}, function(data) {
+  });
   $("#searchSubject").autocomplete({
-    data: {
-      "Apple": null,
-      "Microsoft": null,
-      "Google": null
-    },
-    limit: 20, // The max amount of results that can be shown at once. Default: Infinity.
+    data: aux,
+    limit: 10,
     onAutocomplete: function(val) {
-      addSubject(val);
-    },
-    minLength: 1, // The minimum length of the input for the autocomplete to start. Default: 1.
+      var i = 0;
+      while (val.charAt(i) != "-")
+        ++i;
+      addSubject("GRAU-" + val.substr(0,i-1));
+    }
   });
 }
 
 function setUpSemesters() {
-  $.get("/cgi-bin/getSemesters.py",function(data) {
-    var aux = $("#selectSemester");
-    aux.html(data);
-    aux.material_select();
+  setUpAutocomplete();
+  $("#selectSemester").change(function() {
+    setUpAutocomplete();
+  });
+}
+
+function setSubjectList() {
+  $.get("/cgi-bin/getSubjects.py",function(data) {
+    subjects = data.subjects;
   });
 }
 
 function setUpEverything() {
-  setUpMaterialize();
+  setSubjectList();
   setUpSemesters();
 }
 
