@@ -19,23 +19,11 @@
     <div class="row" style="margin-top: 50px;">
       <div class="input-field col l3">
         <select id = "selectSemester">
-          <?php
-            $ch = curl_init("https://api.fib.upc.edu/v2/quadrimestres/");
-            $headers = array("Accept: application/json",
-            "client_id: Hqyble56qaamSD2jzZcbO9BlYEM8zWPlQdNqFk4H");
-            curl_setopt($ch,CURLOPT_RETURNTRANSFER,true);
-            curl_setopt($ch,CURLOPT_HTTPHEADER,$headers);
-            $res = curl_exec($ch);
-            $object = json_decode($res);
-            $counter = 1;
-            foreach ($object->results as $semester) {
-              if ($semester->actual == "S")
-                echo "<option value = \"$counter\" selected>$semester->id</option>\n";
-              else
-                echo "<option value = \"$counter\">$semester->id</option>\n";
-              ++$counter;
-            }
-          ?>
+          <option value = "1">2015Q1</option>
+<option value = "2">2015Q2</option>
+<option value = "3">2016Q2</option>
+<option value = "4" selected>2017Q1</option>
+<option value = "5">2017Q2</option>
         </select>
       </div>
       <div class="offset-l9">
@@ -54,7 +42,7 @@
         </div>
       </div>
       <div class="col l7 s12">
-        <table id = "scheduleTable" class="bordered centered">
+        <table class="bordered centered">
           <thead>
             <tr>
               <th></th>
@@ -65,19 +53,8 @@
               <th>Friday</th>
             </tr>
           </thead>
-          <tbody>
-            <?php
-              for ($i = 8; $i <= 20; ++$i) {
-                echo "<tr>";
-                echo "<td>";
-                echo "$i-",$i+1,"h";
-                echo "</td>";
-                for ($j = 1; $j <= 5; ++$j) {
-                  echo "<td></td>";
-                }
-              }
-            ?>
-          </tbody>
+          <tbody id ="scheduleContent">
+            <tr><td>8-9h</td><td></td><td></td><td></td><td></td><td></td><tr><td>9-10h</td><td></td><td></td><td></td><td></td><td></td><tr><td>10-11h</td><td></td><td></td><td></td><td></td><td></td><tr><td>11-12h</td><td></td><td></td><td></td><td></td><td></td><tr><td>12-13h</td><td></td><td></td><td></td><td></td><td></td><tr><td>13-14h</td><td></td><td></td><td></td><td></td><td></td><tr><td>14-15h</td><td></td><td></td><td></td><td></td><td></td><tr><td>15-16h</td><td></td><td></td><td></td><td></td><td></td><tr><td>16-17h</td><td></td><td></td><td></td><td></td><td></td><tr><td>17-18h</td><td></td><td></td><td></td><td></td><td></td><tr><td>18-19h</td><td></td><td></td><td></td><td></td><td></td><tr><td>19-20h</td><td></td><td></td><td></td><td></td><td></td><tr><td>20-21h</td><td></td><td></td><td></td><td></td><td></td>          </tbody>
         </table>
       </div>
     </div>
