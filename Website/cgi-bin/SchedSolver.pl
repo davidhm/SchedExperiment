@@ -37,10 +37,11 @@ main:-
   defineDomains(Vars,1),
   noOverlapping(Vars,1),
   label(Vars),
-  write(Vars),nl.
+  write(Vars),
+  halt.
 
 main:-
-  write('No schedule could be found.'),nl.
+  write('[]'),halt.
 
 defineVars(Vars):-
   numberOfSubjects(N),

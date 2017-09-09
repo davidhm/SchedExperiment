@@ -1,0 +1,139 @@
+{
+    "slots": [
+        {
+            "codi_assig": "AS",
+            "grup": "13",
+            "dia_setmana": 1,
+            "inici": "10:00",
+            "durada": 2,
+            "tipus": "L",
+            "aules": "A5201, B5S101"
+        },
+        {
+            "codi_assig": "LP",
+            "grup": "13",
+            "dia_setmana": 4,
+            "inici": "10:00",
+            "durada": 2,
+            "tipus": "L",
+            "aules": "A5S104"
+        },
+        {
+            "codi_assig": "G",
+            "grup": "10",
+            "dia_setmana": 1,
+            "inici": "08:00",
+            "durada": 2,
+            "tipus": "T",
+            "aules": "A5202"
+        },
+        {
+            "codi_assig": "G",
+            "grup": "12",
+            "dia_setmana": 2,
+            "inici": "08:00",
+            "durada": 2,
+            "tipus": "L",
+            "aules": "C6S309"
+        },
+        {
+            "codi_assig": "AS",
+            "grup": "10",
+            "dia_setmana": 3,
+            "inici": "10:00",
+            "durada": 2,
+            "tipus": "T",
+            "aules": "A5001"
+        },
+        {
+            "codi_assig": "LP",
+            "grup": "11",
+            "dia_setmana": 5,
+            "inici": "12:00",
+            "durada": 2,
+            "tipus": "L",
+            "aules": "B5S101"
+        },
+        {
+            "codi_assig": "AS",
+            "grup": "11",
+            "dia_setmana": 1,
+            "inici": "12:00",
+            "durada": 2,
+            "tipus": "L",
+            "aules": "A5201, B5S101"
+        },
+        {
+            "codi_assig": "AS",
+            "grup": "12",
+            "dia_setmana": 1,
+            "inici": "08:00",
+            "durada": 2,
+            "tipus": "L",
+            "aules": "A5201, B5S101"
+        },
+        {
+            "codi_assig": "LP",
+            "grup": "14",
+            "dia_setmana": 4,
+            "inici": "10:00",
+            "durada": 2,
+            "tipus": "L",
+            "aules": "A5S113"
+        },
+        {
+            "codi_assig": "APC",
+            "grup": "10",
+            "dia_setmana": 1,
+            "inici": "10:00",
+            "durada": 2,
+            "tipus": "T",
+            "aules": "A6101"
+        },
+        {
+            "codi_assig": "G",
+            "grup": "11",
+            "dia_setmana": 2,
+            "inici": "08:00",
+            "durada": 2,
+            "tipus": "L",
+            "aules": "C6S308"
+        },
+        {
+            "codi_assig": "APC",
+            "grup": "10",
+            "dia_setmana": 3,
+            "inici": "10:00",
+            "durada": 2,
+            "tipus": "T",
+            "aules": "A6101"
+        },
+        {
+            "codi_assig": "G",
+            "grup": "13",
+            "dia_setmana": 2,
+            "inici": "08:00",
+            "durada": 2,
+            "tipus": "L",
+            "aules": "C6S302"
+        },
+        {
+            "codi_assig": "LP",
+            "grup": "12",
+            "dia_setmana": 5,
+            "inici": "12:00",
+            "durada": 2,
+            "tipus": "L",
+            "aules": "B5S202"
+        },
+        {
+            "codi_assig": "LP",
+            "grup": "10",
+            "dia_setmana": 1,
+            "inici": "12:00",
+            "durada": 2,
+            "tipus": "T",
+            "aules": "A6002"
+        }
+    ]
+}

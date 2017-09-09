@@ -1,12 +1,13 @@
 var subjects;
-var takenColors = [{color:"teal",picked:false},
-{color:"light-blue",picked:"false"},
-{color:"red",picked:false},
-{color:"green",picked:false},
-{color:"lime",picked:false},
-{color:"amber",picked:false},
-{color:"orange",picked:false},
-{color:"brown",picked:false}];
+var takenColors = [{color:"teal",subject:null},
+{color:"light-blue",subject:null},
+{color:"red",subject:null},
+{color:"green",subject:null},
+{color:"lime",subject:null},
+{color:"amber",subject:null},
+{color:"orange",subject:null},
+{color:"brown",subject:null}];
+var slots = {slots:[]};
 
 
 function getRowFromSlot(slotString) {
@@ -21,24 +22,27 @@ function toStandardSlot(slotObject) {
   duration: slotObject.durada}
 }
 
+function getRandomIndex() {
+  var aux = [];
+  for (var i = 0; i < takenColors.length; ++i)
+    if (takenColors[i].subject == null)
+      aux.push(i);
+  var randomIndex = Math.round(Math.random()*(aux.length-1));
+  return aux[randomIndex];
+}
+
 function getCellColor(subject) {
   var i = 0;
-  while (i < takenColors.length && takenColors[i].picked == false &&
-  takenColors[i].subj != subject)
+  while (i < takenColors.length && takenColors[i].subject != subject)
     ++i;
   if (i < takenColors.length)
     return takenColors[i].color;
-  var index = Math.random()*(takenColors.length-1);
-  index = Math.round(index);
-  while (takenColors[index].picked == false) {
-    index = Math.round(Math.random()*(takenColors.length-1));
-  }
-  takenColors[index].picked = true;
-  takenColors[index].subj = subject;
-  return takenColors[index].color;
+  var idx = getRandomIndex();
+  takenColors[idx].subject = subject;
+  return takenColors[idx].color;
 }
 
-function putSlot(slotToPut) {
+function putSlotInTable(slotToPut) {
   var table = $("#scheduleTable").get(0);
   for (var i = slotToPut.row; i <= slotToPut.row + slotToPut.duration - 1;++i) {
     var cell = table.rows[i].cells[slotToPut.column];
@@ -55,11 +59,16 @@ function putSlot(slotToPut) {
   }
 }
 
+function recordSlot(slot) {
+  slots.slots.push(slot);
+}
+
 function processSubjectSlots(slotsObject) {
   for (var i = 0; i < slotsObject.slots.length; ++i) {
     var currentSlot = slotsObject.slots[i];
+    recordSlot(currentSlot);
     var slotToPut = toStandardSlot(currentSlot);
-    putSlot(slotToPut);
+    putSlotInTable(slotToPut);
   }
 }
 
@@ -69,12 +78,36 @@ function addSubjectToSchedule(subject) {
   req.done(processSubjectSlots);
 }
 
+function deleteSubject(subject) {
+  $("#scheduleTable").find("td:not(:first-child)")
+  .find("div:contains("+subject+")").remove();
+  for (var i = 0; i < takenColors.length; ++i) {
+    if (takenColors[i].subject == subject) {
+      takenColors[i].subject = null;
+      break;
+    }
+  }
+  var i = 0;
+  while (i < slots.slots.length) {
+    if (slots.slots[i].codi_assig == subject)
+      slots.slots.splice(i,1);
+    else
+      ++i;
+  }
+}
+
 function addSubject(subject) {
-  var oldHtml = $("#selectedSubjects").html();
-  $("#selectedSubjects").html(
-    oldHtml + '<div class="chip"> GRAU-' + subject +
-    '<i class="close material-icons" >close</i>' + '</div>'
-  );
+  for (var i = 0; i < takenColors.length; ++i)
+    if (takenColors[i].subject == subject)
+      return;
+  var $newSubject = $("<div> </div>").addClass("chip")
+  .text("GRAU-" + subject);
+  var $cross = $("<i> </i>").addClass("close material-icons")
+  .text("close").click(function(){
+    deleteSubject(subject);
+  });
+  $newSubject.append($cross);
+  $("#selectedSubjects").append($newSubject);
   addSubjectToSchedule(subject);
 }
 
@@ -94,19 +127,30 @@ function setUpAutocomplete() {
     $("#searchSubject").autocomplete({
       data: aux,
       limit: 5,
-      onAutocomplete: function(val) {
+      onAutocomplete: function(value) {
         var i = 0;
-        while (val.charAt(i) != " ")
+        while (value.charAt(i) != " ")
           ++i;
-        addSubject(val.substring(0,i));
+        $("#searchSubject").val("");
+        addSubject(value.substring(0,i));
       }
     });
   });
 }
 
+function clearSchedule() {
+  $("#scheduleTable").find("td:not(:first-child)").empty();
+  $("#selectedSubjects").empty();
+  for (var i = 0; i < takenColors.length; ++i) {
+    takenColors[i].subject = null;
+  }
+  slots.slots = [];
+}
+
 function setUpSemesters() {
   setUpAutocomplete();
   $("#selectSemester").change(function() {
+    clearSchedule();
     setUpAutocomplete();
   });
 }
@@ -117,8 +161,27 @@ function setSubjectList() {
   }).done(setUpSemesters);
 }
 
+function warnEmptySlots() {
+  Materialize.toast("No subjects in schedule.",1000);
+}
+
+function computeScheduleSolution() {
+  Materialize.toast("Placeholder.",1000);  
+}
+
+function setUpComputeButton() {
+  $("#computeButton").click(function(){
+    if (slots.slots.length == 0)
+      warnEmptySlots();
+    else {
+      computeScheduleSolution();
+    }
+  });
+}
+
 function setUpEverything() {
   $("#selectSemester").material_select();
+  setUpComputeButton();
   setSubjectList();
 }
 

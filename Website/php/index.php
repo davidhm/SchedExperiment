@@ -49,7 +49,7 @@
         </div>
         <div id="selectedSubjects">
         </div>
-        <div class="btn">
+        <div id = "computeButton" class="btn">
           Compute!
         </div>
       </div>
