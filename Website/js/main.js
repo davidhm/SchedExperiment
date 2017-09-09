@@ -1,4 +1,18 @@
+/*
+  Subjects variable, it holds
+  all the subjects the FIB has
+  up to the loading of the page
+  as per the FIB API.
+*/
+
 var subjects;
+
+/*
+  Colors to be displayed by each
+  subject in the schedule. All colors
+  are materializecss colors.
+*/
+
 var takenColors = [{color:"teal",subject:null},
 {color:"light-blue",subject:null},
 {color:"red",subject:null},
@@ -7,8 +21,26 @@ var takenColors = [{color:"teal",subject:null},
 {color:"amber",subject:null},
 {color:"orange",subject:null},
 {color:"brown",subject:null}];
+
+/*
+  Slots variable. It holds all the slots in
+  the schedule, in no particular order.
+  The format of the slots are the same as the
+  FIB API, for instance:
+  {
+          "codi_assig": "APA",
+          "grup": "12",
+          "dia_setmana": 2,
+          "inici": "08:00",
+          "durada": 2,
+          "tipus": "L",
+          "aules": "B5S201"
+  }
+*/
+
 var slots = {slots:[]};
 
+var solutionComputed;
 
 function getRowFromSlot(slotString) {
   return parseInt(slotString.substr(0,2)) - 7;
@@ -97,6 +129,10 @@ function deleteSubject(subject) {
 }
 
 function addSubject(subject) {
+  if (solutionComputed == true) {
+    solutionComputed = false;
+    clearSchedule();
+  }
   for (var i = 0; i < takenColors.length; ++i)
     if (takenColors[i].subject == subject)
       return;
@@ -150,6 +186,7 @@ function clearSchedule() {
 function setUpSemesters() {
   setUpAutocomplete();
   $("#selectSemester").change(function() {
+    solutionComputed = false;
     clearSchedule();
     setUpAutocomplete();
   });
@@ -165,8 +202,54 @@ function warnEmptySlots() {
   Materialize.toast("No subjects in schedule.",1000);
 }
 
-function computeScheduleSolution() {
-  Materialize.toast("Placeholder.",1000);  
+function remoteSolutionCallback() {
+  $.post("/cgi-bin/computeScheduleSolution.py",
+    JSON.stringify(slots)
+  ).done(displaySolvedSchedule);
+}
+
+function displayScheduleSolution(solutionObject) {
+  for (var subject in solutionObject) {
+    if (solutionObject.hasOwnProperty(subject)) {
+      $("#scheduleTable td:not(:first-child) div:contains(" + 
+         subject + "):not(:contains(" + solutionObject[subject][0] +
+         ")):not(:contains(" + solutionObject[subject][1] + "))")
+      .remove();      
+    }
+  }
+}
+
+function reflectSolution(solutionObject) {
+  solutionComputed = true;
+  var i = 0;
+  while (i < slots.slots.length) {
+    var currentSubject = slots.slots[i].codi_assig;
+    var currentGroup = parseInt(slots.slots[i].grup);
+    var solutionGroup = null;
+    if (slots.slots[i].tipus == "L")
+      solutionGroup = solutionObject[currentSubject][1];
+    else
+      solutionGroup = solutionObject[currentSubject][0];
+    if (currentGroup != solutionGroup)
+      slots.slots.splice(i,1);
+    else
+      ++i;
+  }
+}
+
+function solutionNotFound() {
+  clearSchedule();
+  Materialize.toast("A solution couldn't be found",1000);
+}
+
+function displaySolvedSchedule(sol) {
+  if (sol.hasOwnProperty("emptyResults")) {
+    solutionNotFound();
+    return;
+  }
+  reflectSolution(sol);
+  displayScheduleSolution(sol);
+  Materialize.toast("Solution found",1000);
 }
 
 function setUpComputeButton() {
@@ -174,7 +257,7 @@ function setUpComputeButton() {
     if (slots.slots.length == 0)
       warnEmptySlots();
     else {
-      computeScheduleSolution();
+      remoteSolutionCallback();
     }
   });
 }

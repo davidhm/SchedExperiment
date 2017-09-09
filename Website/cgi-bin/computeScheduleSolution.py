@@ -167,7 +167,6 @@ def printSolution(solutionObject):
     printHeaders()
     print(json.dumps(solutionObject))
 
-
 setUpLogging()
 slotsObject = parseJSONToDict(getJSONRaw())
 popenObject = createPrologSubprocess()
